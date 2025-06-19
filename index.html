@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ROV Control</title>
+  <style>
+    body { font-family: Arial; margin: 0; display: flex; height: 100vh; }
+    .left, .right { flex: 1; padding: 20px; box-sizing: border-box; }
+    .left { background: #f0f0f0; }
+    .right { background: #e0f7fa; position: relative; }
+    .camera-box { width: 100%; height: 80%; background: black; }
+    .button-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; justify-items: center; align-items: center; margin-top: 20px; }
+    button { padding: 15px; font-size: 14px; border-radius: 10px; }
+    .center-btn { grid-column: 2 / 3; }
+  </style>
+</head>
+<body>
+
+<div class="left">
+  <h2>ROV Camera Stream</h2>
+  <div class="camera-box">
+    <img src="/video_feed" style="width:100%; height:100%; object-fit:cover;" />
+  </div>
+</div>
+
+<div class="right" id="controlArea">
+  <div>
+    <label>
+      <input type="checkbox" id="modeSwitch" onchange="toggleMode()">
+      <strong>Bật điều khiển Web</strong>
+    </label>
+    <span id="modeLabel" style="margin-left:10px; font-weight:bold; color:#007bff;">Chế độ: Tay cầm PS2</span>
+  </div>
+
+  <h2 style="margin-top:20px;">ROV Control</h2>
+
+  <div class="button-grid">
+    <button onclick="sendCmd('forward_left')">Tiến Trái</button>
+    <button onclick="sendCmd('forward')">Tiến</button>
+    <button onclick="sendCmd('forward_right')">Tiến Phải</button>
+
+    <button onclick="sendCmd('left')">Trái</button>
+    <button disabled style="visibility: hidden;">-</button>
+    <button onclick="sendCmd('right')">Phải</button>
+
+    <button onclick="sendCmd('backward_left')">Lùi Trái</button>
+    <button onclick="sendCmd('backward')">Lùi</button>
+    <button onclick="sendCmd('backward_right')">Lùi Phải</button>
+  </div>
+
+  <h3 style="margin-top: 25px;">PID Control</h3>
+  <button onclick="sendCmd('pid')">PID</button>
+
+  <p id="ps2data" style="margin-top: 20px;"></p>
+</div>
+
+<script>
+let webControlEnabled = false;
+
+function toggleMode() {
+  const checkbox = document.getElementById('modeSwitch');
+  const label = document.getElementById('modeLabel');
+  webControlEnabled = checkbox.checked;
+
+  label.innerText = "Chế độ: " + (webControlEnabled ? "Web" : "Tay cầm PS2");
+  label.style.color = webControlEnabled ? "#28a745" : "#007bff";
+
+  const buttons = document.querySelectorAll('#controlArea button');
+  buttons.forEach(btn => {
+    if (btn.innerText !== 'PID') {
+      btn.disabled = !webControlEnabled;
+      btn.style.opacity = webControlEnabled ? 1 : 0.5;
+    }
+  });
+
+  fetch('/control', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ mode: "set", value: webControlEnabled ? "web" : "ps2" })
+  });
+}
+
+function sendCmd(cmd) {
+  if (!webControlEnabled) return;
+
+  fetch('/control', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ command: cmd })
+  }).then(res => res.json())
+    .then(data => console.log(data));
+}
+
+setInterval(() => {
+  fetch('/data')
+    .then(res => res.json())
+    .then(data => document.getElementById('ps2data').innerText = data.message);
+}, 1000);
+
+window.onload = toggleMode;
+</script>
+
+</body>
+</html>
