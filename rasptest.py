@@ -50,6 +50,12 @@ in4 = pca.channels[11]
 #GPIO 21 = in4_L298_4
 
 #GPIO 17 = light_on
+# Thiết lập các chân GPIO làm OUTPUT
+GPIO.setmode(GPIO.BCM) #Để dùng đúng cách đánh số chân.
+GPIO.setwarnings(False) #Tắt cảnh báo khi sử dụng lại các chân GPIO
+gpio_pins = [4, 18, 27, 22, 23, 24, 25, 5, 6, 12, 13, 19, 16, 26, 20, 21, 17]
+for pin in gpio_pins:
+    GPIO.setup(pin, GPIO.OUT)
 
 @app.route('/control', methods=['POST']) #Nhận lệnh từ web gửi xuống Ras
 def control():
