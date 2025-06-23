@@ -77,6 +77,36 @@ def control():
         RPWM1.duty_cycle = 0
         LPWM2.duty_cycle = 0xFFFF #duty
         RPWM2.duty_cycle = 0xFFFF 
+    elif cmd == "Tientrai":
+        GPIO.output(4, GPIO.LOW)
+        GPIO.output(18, GPIO.LOW)
+        GPIO.output(27, GPIO.LOW)
+        GPIO.output(22, GPIO.HIGH) 
+
+        GPIO.output(23, GPIO.HIGH)
+        GPIO.output(24, GPIO.LOW)
+        GPIO.output(25, GPIO.HIGH)
+        GPIO.output(5, GPIO.LOW)  
+        #duty = int(speed * 0xFFFF)
+        LPWM1.duty_cycle = 0
+        RPWM1.duty_cycle = 0xFFFF 
+        LPWM2.duty_cycle = 0xFFFF 
+        RPWM2.duty_cycle = 0xFFFF
+    elif cmd == "Tienphai":
+        GPIO.output(4, GPIO.LOW)
+        GPIO.output(18, GPIO.HIGH)
+        GPIO.output(27, GPIO.LOW)
+        GPIO.output(22, GPIO.LOW) 
+
+        GPIO.output(23, GPIO.HIGH)
+        GPIO.output(24, GPIO.LOW)
+        GPIO.output(25, GPIO.HIGH)
+        GPIO.output(5, GPIO.LOW)  
+        #duty = int(speed * 0xFFFF)
+        LPWM1.duty_cycle = 0xFFFF #duty
+        RPWM1.duty_cycle = 0 
+        LPWM2.duty_cycle = 0xFFFF 
+        RPWM2.duty_cycle = 0xFFFF
     elif cmd == "Lui":
         GPIO.output(4, GPIO.HIGH)
         GPIO.output(18, GPIO.LOW)
@@ -91,6 +121,36 @@ def control():
         LPWM1.duty_cycle = 0xFFFF #duty
         RPWM1.duty_cycle = 0xFFFF 
         LPWM2.duty_cycle = 0
+        RPWM2.duty_cycle = 0
+    elif cmd == "Luitrai":
+        GPIO.output(4, GPIO.HIGH)
+        GPIO.output(18, GPIO.LOW)
+        GPIO.output(27, GPIO.HIGH)
+        GPIO.output(22, GPIO.LOW) 
+
+        GPIO.output(23, GPIO.LOW)
+        GPIO.output(24, GPIO.LOW)
+        GPIO.output(25, GPIO.LOW)
+        GPIO.output(5, GPIO.HIGH)  
+        #duty = int(speed * 0xFFFF)
+        LPWM1.duty_cycle = 0xFFFF #duty
+        RPWM1.duty_cycle = 0xFFFF 
+        LPWM2.duty_cycle = 0
+        RPWM2.duty_cycle = 0xFFFF
+    elif cmd == "Luiphai":
+        GPIO.output(4, GPIO.HIGH)
+        GPIO.output(18, GPIO.LOW)
+        GPIO.output(27, GPIO.HIGH)
+        GPIO.output(22, GPIO.LOW) 
+
+        GPIO.output(23, GPIO.LOW)
+        GPIO.output(24, GPIO.HIGH)
+        GPIO.output(25, GPIO.LOW)
+        GPIO.output(5, GPIO.LOW)  
+        #duty = int(speed * 0xFFFF)
+        LPWM1.duty_cycle = 0xFFFF #duty
+        RPWM1.duty_cycle = 0xFFFF 
+        LPWM2.duty_cycle = 0xFFFF
         RPWM2.duty_cycle = 0
     elif cmd == "Trai":
         GPIO.output(4, GPIO.HIGH)
@@ -167,21 +227,126 @@ def control():
         RPWM3.duty_cycle = 0xFFFF
         LPWM4.duty_cycle = 0xFFFF #duty
         RPWM4.duty_cycle = 0xFFFF  
-    elif cmd == "Noi":
+    elif cmd == "Nghientruoc_Down":
+        GPIO.output(6, GPIO.HIGH)
+        GPIO.output(12, GPIO.LOW)
+        GPIO.output(13, GPIO.HIGH)
+        GPIO.output(19, GPIO.LOW) 
+        
+        GPIO.output(16, GPIO.LOW)
+        GPIO.output(26, GPIO.LOW)
+        GPIO.output(20, GPIO.LOW)
+        GPIO.output(21, GPIO.LOW) 
+        #duty = int(speed * 0xFFFF)
+        LPWM3.duty_cycle = 0xFFFF
+        RPWM3.duty_cycle = 0xFFFF #duty
+        LPWM4.duty_cycle = 0
+        RPWM4.duty_cycle = 0  
+    elif cmd == "Nghientruoc_Up":
         GPIO.output(6, GPIO.LOW)
         GPIO.output(12, GPIO.HIGH)
         GPIO.output(13, GPIO.LOW)
         GPIO.output(19, GPIO.HIGH) 
         
         GPIO.output(16, GPIO.LOW)
+        GPIO.output(26, GPIO.LOW)
+        GPIO.output(20, GPIO.LOW)
+        GPIO.output(21, GPIO.LOW) 
+        #duty = int(speed * 0xFFFF)
+        LPWM3.duty_cycle = 0xFFFF #duty
+        RPWM3.duty_cycle = 0xFFFF 
+        LPWM4.duty_cycle = 0
+        RPWM4.duty_cycle = 0 
+    elif cmd == "Nghientrai_Down":
+        GPIO.output(6, GPIO.HIGH)
+        GPIO.output(12, GPIO.LOW)
+        GPIO.output(13, GPIO.LOW)
+        GPIO.output(19, GPIO.LOW) 
+        
+        GPIO.output(16, GPIO.HIGH)
+        GPIO.output(26, GPIO.LOW)
+        GPIO.output(20, GPIO.LOW)
+        GPIO.output(21, GPIO.LOW) 
+        #duty = int(speed * 0xFFFF)
+        LPWM3.duty_cycle = 0xFFFF #duty
+        RPWM3.duty_cycle = 0
+        LPWM4.duty_cycle = 0xFFFF 
+        RPWM4.duty_cycle = 0 
+    elif cmd == "Nghientrai_Up":
+        GPIO.output(6, GPIO.LOW)
+        GPIO.output(12, GPIO.HIGH)
+        GPIO.output(13, GPIO.LOW)
+        GPIO.output(19, GPIO.LOW) 
+        
+        GPIO.output(16, GPIO.LOW)
+        GPIO.output(26, GPIO.HIGH)
+        GPIO.output(20, GPIO.LOW)
+        GPIO.output(21, GPIO.LOW) 
+        #duty = int(speed * 0xFFFF)
+        LPWM3.duty_cycle = 0xFFFF #duty
+        RPWM3.duty_cycle = 0 
+        LPWM4.duty_cycle = 0xFFFF
+        RPWM4.duty_cycle = 0
+    elif cmd == "Nghienphai_Down":
+        GPIO.output(6, GPIO.LOW)
+        GPIO.output(12, GPIO.LOW)
+        GPIO.output(13, GPIO.HIGH)
+        GPIO.output(19, GPIO.LOW) 
+        
+        GPIO.output(16, GPIO.LOW)
+        GPIO.output(26, GPIO.LOW)
+        GPIO.output(20, GPIO.HIGH)
+        GPIO.output(21, GPIO.LOW) 
+        #duty = int(speed * 0xFFFF)
+        LPWM3.duty_cycle = 0
+        RPWM3.duty_cycle = 0xFFFF #duty
+        LPWM4.duty_cycle = 0xFFFF
+        RPWM4.duty_cycle = 0  
+    elif cmd == "Nghienphai_Up":
+        GPIO.output(6, GPIO.LOW)
+        GPIO.output(12, GPIO.LOW)
+        GPIO.output(13, GPIO.LOW)
+        GPIO.output(19, GPIO.HIGH) 
+        
+        GPIO.output(16, GPIO.LOW)
+        GPIO.output(26, GPIO.LOW)
+        GPIO.output(20, GPIO.LOW)
+        GPIO.output(21, GPIO.HIGH) 
+        #duty = int(speed * 0xFFFF)
+        LPWM3.duty_cycle = 0
+        RPWM3.duty_cycle = 0xFFFF #duty
+        LPWM4.duty_cycle = 0xFFFF
+        RPWM4.duty_cycle = 0       
+    elif cmd == "Nghiensau_Down":
+        GPIO.output(6, GPIO.LOW)
+        GPIO.output(12, GPIO.LOW)
+        GPIO.output(13, GPIO.LOW)
+        GPIO.output(19, GPIO.LOW) 
+        
+        GPIO.output(16, GPIO.HIGH)
+        GPIO.output(26, GPIO.LOW)
+        GPIO.output(20, GPIO.HIGH)
+        GPIO.output(21, GPIO.LOW) 
+        #duty = int(speed * 0xFFFF)
+        LPWM3.duty_cycle = 0
+        RPWM3.duty_cycle = 0
+        LPWM4.duty_cycle = 0xFFFF
+        RPWM4.duty_cycle = 0xFFFF #duty  
+    elif cmd == "Nghiensau_Up":
+        GPIO.output(6, GPIO.LOW)
+        GPIO.output(12, GPIO.LOW)
+        GPIO.output(13, GPIO.LOW)
+        GPIO.output(19, GPIO.LOW) 
+        
+        GPIO.output(16, GPIO.LOW)
         GPIO.output(26, GPIO.HIGH)
         GPIO.output(20, GPIO.LOW)
         GPIO.output(21, GPIO.HIGH) 
         #duty = int(speed * 0xFFFF)
-        LPWM3.duty_cycle = 0xFFFF #duty
-        RPWM3.duty_cycle = 0xFFFF 
-        LPWM4.duty_cycle = 0xFFFF #duty
-        RPWM4.duty_cycle = 0xFFFF  
+        LPWM3.duty_cycle = 0
+        RPWM3.duty_cycle = 0
+        LPWM4.duty_cycle = 0xFFFF
+        RPWM4.duty_cycle = 0xFFFF #duty  
     elif cmd == "Batden":
         GPIO.output(17, GPIO.HIGH) 
     elif cmd == "Tatden":
@@ -199,9 +364,9 @@ def control():
     elif cmd == "Dunglaynuoc":
         in1.duty_cycle = 0
         in2.duty_cycle = 0
-        in3.duty_cycle = 0xFFFF 
+        in3.duty_cycle = 0
         in4.duty_cycle = 0        
-    else:
+    elif cmd == "Dung":
         GPIO.output(4, GPIO.LOW)
         GPIO.output(18, GPIO.LOW)
         GPIO.output(27, GPIO.LOW)
