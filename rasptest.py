@@ -94,10 +94,20 @@ def set_mode():
 @app.route('/control', methods=['POST'])
 def control():
     #cmd = request.form.get('cmd', '')
+    global mode
     data = request.get_json()
+    if data.get("mode") == "set":
+        new_mode = data.get("value", "")
+        if new_mode in ["web", "ps2"]:
+            mode = new_mode
+            print(f"✅ Đã chuyển chế độ sang: {mode}")
+            return json.dumps({"status": "ok", "mode": mode})
+        else:
+            return json.dumps({"status": "error", "reason": "invalid mode"})
+
+    # ✅ Nếu là lệnh điều khiển thông thường
     cmd = data.get("cmd", "")
     print(f"Nhận lệnh từ laptop: {cmd}")
-    
     def parse_pwm(value):
         try:
             return int(float(value))
