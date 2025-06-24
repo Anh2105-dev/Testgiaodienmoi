@@ -26,7 +26,6 @@ mpu = MPU9250(
     mfs=AK8963_BIT_16,  # Magnetometer resolution
     mode=AK8963_MODE_C100HZ
 )
-mpu.calibrate()  # Nếu bạn đã lưu hệ số hiệu chuẩn, có thể bỏ qua
 mpu.configure()  # Apply settings
 
 # BMP280 (áp suất & nhiệt độ)
