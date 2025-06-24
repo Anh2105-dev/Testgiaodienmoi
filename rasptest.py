@@ -19,14 +19,16 @@ i2c = busio.I2C(board.SCL, board.SDA)
 mpu = MPU9250(
     address_ak=AK8963_ADDRESS,
     address_mpu_master=MPU9050_ADDRESS_68,
-    address_mpu_slave=None,
     bus=1,
     gfs=GFS_250,  # Gyroscope full scale
     afs=AFS_2G,   # Accelerometer full scale
     mfs=AK8963_BIT_16,  # Magnetometer resolution
     mode=AK8963_MODE_C100HZ
 )
-mpu.configure()  # Apply settings
+try:
+    mpu.configure()  # Apply settings
+except Exception as e:
+    print("Không thể cấu hình từ kế, bỏ qua magnetometer:", e)
 
 # BMP280 (áp suất & nhiệt độ)
 bmp280 = adafruit_bmp280.Adafruit_BMP280_I2C(i2c)
@@ -654,7 +656,6 @@ def sensor_stream():
             # Đọc dữ liệu cảm biến
             ax, ay, az = mpu.readAccelerometerMaster()
             gx, gy, gz = mpu.readGyroscopeMaster()
-            mx, my, mz = mpu.readMagnetometerMaster()
             temp = bmp280.temperature
             pressure = bmp280.pressure
 
@@ -662,7 +663,6 @@ def sensor_stream():
             data = {
                 "acc": {"x": round(ax, 2), "y": round(ay, 2), "z": round(az, 2)},
                 "gyro": {"x": round(gx, 2), "y": round(gy, 2), "z": round(gz, 2)},
-                "mag": {"x": round(mx, 2), "y": round(my, 2), "z": round(mz, 2)},
                 "temp": round(temp, 2),
                 "pressure": round(pressure, 2)
             }
@@ -670,6 +670,6 @@ def sensor_stream():
             # Stream dưới dạng text/plain
             yield f"data: {json.dumps(data)}\n\n"
             time.sleep(0.2)
-
+       
     return Response(stream_with_context(generate_sensor_data()), mimetype='text/event-stream')
 app.run(host='0.0.0.0', port=5000) #Khởi chạy Flask server
