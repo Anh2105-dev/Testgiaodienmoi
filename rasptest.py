@@ -31,7 +31,7 @@ except Exception as e:
     print("Không thể cấu hình từ kế, bỏ qua magnetometer:", e)
 
 # BMP280 (áp suất & nhiệt độ)
-bmp280 = adafruit_bmp280.Adafruit_BMP280_I2C(i2c)
+bmp280 = adafruit_bmp280.Adafruit_BMP280_I2C(i2c, address=0x76)
 bmp280.sea_level_pressure = 1013.25  # Điều chỉnh theo vị trí thực
 
 pca = PCA9685(i2c) #Tạo đối tượng PCA9685
@@ -93,8 +93,11 @@ def set_mode():
 
 @app.route('/control', methods=['POST'])
 def control():
-    cmd = request.form.get('cmd', '')
-
+    #cmd = request.form.get('cmd', '')
+    data = request.get_json()
+    cmd = data.get("cmd", "")
+    print(f"Nhận lệnh từ laptop: {cmd}")
+    
     def parse_pwm(value):
         try:
             return int(float(value))
