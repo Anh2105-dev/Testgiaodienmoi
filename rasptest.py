@@ -82,13 +82,13 @@ gpio_pins = [4, 18, 27, 22, 23, 24, 25, 5, 6, 12, 13, 19, 16, 26, 20, 21, 17]
 for pin in gpio_pins:
     GPIO.setup(pin, GPIO.OUT)
 
-mode = "web"  # hoặc "ps2"
+mode = "ps2"  # hoặc "web"
 
 @app.route('/set_mode', methods=['POST'])
 def set_mode():
     global mode
     data = request.get_json()
-    mode = data.get('mode', 'web')
+    mode = data.get('mode', 'ps2')
     print("Đã chuyển chế độ sang:", mode)
     return "OK"
 
