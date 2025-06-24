@@ -87,25 +87,15 @@ mode = "web"  # hoặc "ps2"
 @app.route('/set_mode', methods=['POST'])
 def set_mode():
     global mode
-    mode = request.form.get('mode', 'web')
+    data = request.get_json()
+    mode = data.get('mode', 'web')
     print("Đã chuyển chế độ sang:", mode)
     return "OK"
 
 @app.route('/control', methods=['POST'])
 def control():
     #cmd = request.form.get('cmd', '')
-    global mode
     data = request.get_json()
-    if data.get("mode") == "set":
-        new_mode = data.get("value", "")
-        if new_mode in ["web", "ps2"]:
-            mode = new_mode
-            print(f"✅ Đã chuyển chế độ sang: {mode}")
-            return json.dumps({"status": "ok", "mode": mode})
-        else:
-            return json.dumps({"status": "error", "reason": "invalid mode"})
-
-    # ✅ Nếu là lệnh điều khiển thông thường
     cmd = data.get("cmd", "")
     print(f"Nhận lệnh từ laptop: {cmd}")
     def parse_pwm(value):
@@ -114,8 +104,8 @@ def control():
         except:
             return 0
 
-    pwmLeftPS2 = parse_pwm(request.form.get('pwmLeftPS2', 0))
-    pwmRightPS2 = parse_pwm(request.form.get('pwmRightPS2', 0))
+    pwmLeftPS2 = parse_pwm(data.get('pwmLeftPS2', 0))
+    pwmRightPS2 = parse_pwm(data.get('pwmRightPS2', 0))
 
     if mode == "web" and cmd.endswith("PS2"):
         print("Chế độ Web đang hoạt động. Bỏ qua lệnh PS2:", cmd)
