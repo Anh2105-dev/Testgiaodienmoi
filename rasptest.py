@@ -82,22 +82,22 @@ gpio_pins = [4, 18, 27, 22, 23, 24, 25, 5, 6, 12, 13, 19, 16, 26, 20, 21, 17]
 for pin in gpio_pins:
     GPIO.setup(pin, GPIO.OUT)
 
-mode = "ps2"  # hoặc "web"
-
-@app.route('/set_mode', methods=['POST'])
-def set_mode():
-    global mode
-    data = request.get_json()
-    mode = data.get('mode', 'ps2')
-    print("Đã chuyển chế độ sang:", mode)
-    return "OK"
+mode = "web"  # hoặc "ps2"
 
 @app.route('/control', methods=['POST'])
 def control():
-    #cmd = request.form.get('cmd', '')
-    data = request.get_json()
+    global mode
+    data = request.get_json()   
+
+    if data.get("mode") == "set":
+        mode = data.get("value", "web")
+        print("✅ Đã chuyển chế độ sang:", mode)
+        return jsonify({"status": "ok", "mode": mode})
+
     cmd = data.get("cmd", "")
-    print(f"Nhận lệnh từ laptop: {cmd}")
+    source = "PS2" if cmd.endswith("PS2") else "Web"
+    print(f"⏬ Nhận lệnh từ {source}: {cmd}")
+
     def parse_pwm(value):
         try:
             return int(float(value))
@@ -108,13 +108,13 @@ def control():
     pwmRightPS2 = parse_pwm(data.get('pwmRightPS2', 0))
 
     if mode == "web" and cmd.endswith("PS2"):
-        print("Chế độ Web đang hoạt động. Bỏ qua lệnh PS2:", cmd)
-        return "IGNORED"
+        print("⚠️ Web đang chạy. Bỏ qua lệnh PS2:", cmd)
+        return jsonify({"status": "ignored", "reason": "web mode"})
     elif mode == "ps2" and not cmd.endswith("PS2"):
-        print("Chế độ PS2 đang hoạt động. Bỏ qua lệnh Web:", cmd)
-        return "IGNORED"
+        print("⚠️ PS2 đang chạy. Bỏ qua lệnh Web:", cmd)
+        return jsonify({"status": "ignored", "reason": "ps2 mode"})
 
-    print(f"Đang xử lý lệnh: {cmd} (PWM: Left={pwmLeftPS2}, Right={pwmRightPS2})")
+    print(f"✅ Xử lý lệnh: {cmd} (PWM: Left={pwmLeftPS2}, Right={pwmRightPS2})")
     # TODO: Gửi lệnh điều khiển động cơ tại đây
     
     if cmd == "Tien":
