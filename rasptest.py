@@ -1,4 +1,4 @@
-from flask import Flask, request, Response #Tạo web server - Nhận dữ liệu lệnh điều khiển gửi từ client - Trả dữ liệu video dạng stream
+from flask import Flask, request, Response, jsonify #Tạo web server - Nhận dữ liệu lệnh điều khiển gửi từ client - Trả dữ liệu video dạng stream
 import cv2 #OpenCV để xử lý và lấy hình ảnh từ camera
 import RPi.GPIO as GPIO #Điều khiển GPIO trên Raspberry Pi
 from flask import Response, stream_with_context
@@ -638,7 +638,7 @@ def control():
         LPWM4.duty_cycle = 0
         RPWM4.duty_cycle = 0
 
-    return "OK" #Trả về "OK" để xác nhận với client
+    return jsonify({"status": "ok"})
 
 camera = cv2.VideoCapture(0) #Mở camera mặc định (index 0)
 #Đặt độ phân giải khung hình video: 1280x720
