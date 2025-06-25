@@ -2,6 +2,7 @@ from flask import Flask, request, Response, jsonify #Tạo web server - Nhận d
 import cv2 #OpenCV để xử lý và lấy hình ảnh từ camera
 import RPi.GPIO as GPIO #Điều khiển GPIO trên Raspberry Pi
 from flask import Response, stream_with_context
+from flask_cors import CORS
 import json
 import time
 import board
@@ -12,7 +13,7 @@ from mpu9250_jmdev.registers import *
 from mpu9250_jmdev.mpu_9250 import MPU9250
 
 app = Flask(__name__)
-
+CORS(app)
 i2c = busio.I2C(board.SCL, board.SDA)
 
 # MPU9250 (IMU)
@@ -99,9 +100,12 @@ def control():
         print("✅ Đã chuyển chế độ sang:", mode)
         return jsonify({"status": "ok", "mode": mode})
 
-    cmds = data.get("cmds", "")
+    #cmds = data.get("cmds", "")
+    cmds_list = data.get("cmds", "")
+    if isinstance(cmd_list, str):
+        cmds_list = cmds_list.split(",")
     source = "PS2" if cmds.endswith("PS2") else "Web"
-    print(f"⏬ Nhận lệnh từ {source}: {cmds}")
+    print(f" Nhận lệnh từ {source}: {cmds}")
 
     def parse_pwm(value):
         try:
@@ -122,7 +126,8 @@ def control():
     print(f"✅ Xử lý lệnh: {cmds} (PWM: Left={pwmLeftPS2}, Right={pwmRightPS2})")
     # TODO: Gửi lệnh điều khiển động cơ tại đây
     
-    if cmds == "Tien":
+    #if cmds == "Tien":
+    if "Tien" in cmds_list:
         GPIO.output(4, GPIO.LOW)
         GPIO.output(18, GPIO.LOW)
         GPIO.output(27, GPIO.LOW)
@@ -136,7 +141,8 @@ def control():
         RPWM1.duty_cycle = 0
         LPWM2.duty_cycle = 0xFFFF
         RPWM2.duty_cycle = 0xFFFF 
-    elif cmds == "Tientrai":
+    #elif cmds == "Tientrai":
+    if "Tientrai" in cmds_list:
         GPIO.output(4, GPIO.LOW)
         GPIO.output(18, GPIO.LOW)
         GPIO.output(27, GPIO.LOW)
@@ -150,7 +156,8 @@ def control():
         RPWM1.duty_cycle = 0xFFFF 
         LPWM2.duty_cycle = 0xFFFF 
         RPWM2.duty_cycle = 0xFFFF
-    elif cmds == "Tienphai":
+    #elif cmds == "Tienphai":
+    if "Tienphai" in cmds_list:
         GPIO.output(4, GPIO.LOW)
         GPIO.output(18, GPIO.HIGH)
         GPIO.output(27, GPIO.LOW)
@@ -164,7 +171,8 @@ def control():
         RPWM1.duty_cycle = 0 
         LPWM2.duty_cycle = 0xFFFF 
         RPWM2.duty_cycle = 0xFFFF
-    elif cmds == "Lui":
+    #elif cmds == "Lui":
+    if "Lui" in cmds_list:
         GPIO.output(4, GPIO.HIGH)
         GPIO.output(18, GPIO.LOW)
         GPIO.output(27, GPIO.HIGH)
@@ -178,7 +186,8 @@ def control():
         RPWM1.duty_cycle = 0xFFFF 
         LPWM2.duty_cycle = 0
         RPWM2.duty_cycle = 0
-    elif cmds == "Luitrai":
+    #elif cmds == "Luitrai":
+    if "Luitrai" in cmds_list:
         GPIO.output(4, GPIO.HIGH)
         GPIO.output(18, GPIO.LOW)
         GPIO.output(27, GPIO.HIGH)
@@ -192,7 +201,8 @@ def control():
         RPWM1.duty_cycle = 0xFFFF 
         LPWM2.duty_cycle = 0
         RPWM2.duty_cycle = 0xFFFF
-    elif cmds == "Luiphai":
+    #elif cmds == "Luiphai":
+    if "Luiphai" in cmds_list:
         GPIO.output(4, GPIO.HIGH)
         GPIO.output(18, GPIO.LOW)
         GPIO.output(27, GPIO.HIGH)
@@ -206,7 +216,8 @@ def control():
         RPWM1.duty_cycle = 0xFFFF 
         LPWM2.duty_cycle = 0xFFFF
         RPWM2.duty_cycle = 0
-    elif cmds == "Trai":
+    #elif cmds == "Trai":
+    if "Trai" in cmds_list:
         GPIO.output(4, GPIO.HIGH)
         GPIO.output(18, GPIO.LOW)
         GPIO.output(27, GPIO.LOW)
@@ -220,7 +231,8 @@ def control():
         RPWM1.duty_cycle = 0
         LPWM2.duty_cycle = 0xFFFF 
         RPWM2.duty_cycle = 0
-    elif cmds == "Phai":
+    #elif cmds == "Phai":
+    if "Phai" in cmds_list:
         GPIO.output(4, GPIO.LOW)
         GPIO.output(18, GPIO.LOW)
         GPIO.output(27, GPIO.HIGH)
@@ -234,7 +246,8 @@ def control():
         RPWM1.duty_cycle = 0xFFFF 
         LPWM2.duty_cycle = 0
         RPWM2.duty_cycle = 0xFFFF
-    elif cmds == "Quaytrai":
+    #elif cmds == "Quaytrai":
+    if "Quaytrai" in cmds_list:
         GPIO.output(4, GPIO.HIGH)
         GPIO.output(18, GPIO.LOW)
         GPIO.output(27, GPIO.LOW)
@@ -248,7 +261,8 @@ def control():
         RPWM1.duty_cycle = 0
         LPWM2.duty_cycle = 0
         RPWM2.duty_cycle = 0xFFFF 
-    elif cmds == "Quayphai":
+    #elif cmds == "Quayphai":
+    if "Quayphai" in cmds_list:
         GPIO.output(4, GPIO.LOW)
         GPIO.output(18, GPIO.LOW)
         GPIO.output(27, GPIO.HIGH)
@@ -262,7 +276,8 @@ def control():
         RPWM1.duty_cycle = 0xFFFF 
         LPWM2.duty_cycle = 0xFFFF 
         RPWM2.duty_cycle = 0 
-    elif cmds == "Lan":
+    #elif cmds == "Lan":
+    if "Lan" in cmds_list:
         GPIO.output(6, GPIO.HIGH)
         GPIO.output(12, GPIO.LOW)
         GPIO.output(13, GPIO.HIGH)
@@ -276,7 +291,8 @@ def control():
         RPWM3.duty_cycle = 0xFFFF
         LPWM4.duty_cycle = 0xFFFF 
         RPWM4.duty_cycle = 0xFFFF
-    elif cmds == "Noi":
+    #elif cmds == "Noi":
+    if "Noi" in cmds_list:
         GPIO.output(6, GPIO.LOW)
         GPIO.output(12, GPIO.HIGH)
         GPIO.output(13, GPIO.LOW)
@@ -290,7 +306,8 @@ def control():
         RPWM3.duty_cycle = 0xFFFF
         LPWM4.duty_cycle = 0xFFFF 
         RPWM4.duty_cycle = 0xFFFF    
-    elif cmds == "Nghientruoc_Down":
+    #elif cmds == "Nghientruoc_Down":
+    if "Nghientruoc_Down" in cmds_list:
         GPIO.output(6, GPIO.HIGH)
         GPIO.output(12, GPIO.LOW)
         GPIO.output(13, GPIO.HIGH)
@@ -304,7 +321,8 @@ def control():
         RPWM3.duty_cycle = 0xFFFF 
         LPWM4.duty_cycle = 0
         RPWM4.duty_cycle = 0  
-    elif cmds == "Nghientruoc_Up":
+    #elif cmds == "Nghientruoc_Up":
+    if "Nghientruoc_Up" in cmds_list:
         GPIO.output(6, GPIO.LOW)
         GPIO.output(12, GPIO.HIGH)
         GPIO.output(13, GPIO.LOW)
@@ -318,7 +336,8 @@ def control():
         RPWM3.duty_cycle = 0xFFFF 
         LPWM4.duty_cycle = 0
         RPWM4.duty_cycle = 0 
-    elif cmds == "Nghientrai_Down":
+    #elif cmds == "Nghientrai_Down":
+    if "Nghientrai_Down" in cmds_list:
         GPIO.output(6, GPIO.HIGH)
         GPIO.output(12, GPIO.LOW)
         GPIO.output(13, GPIO.LOW)
@@ -332,7 +351,8 @@ def control():
         RPWM3.duty_cycle = 0
         LPWM4.duty_cycle = 0xFFFF 
         RPWM4.duty_cycle = 0 
-    elif cmds == "Nghientrai_Up":
+    #elif cmds == "Nghientrai_Up":
+    if "Nghientrai_Up" in cmds_list:
         GPIO.output(6, GPIO.LOW)
         GPIO.output(12, GPIO.HIGH)
         GPIO.output(13, GPIO.LOW)
@@ -346,7 +366,8 @@ def control():
         RPWM3.duty_cycle = 0 
         LPWM4.duty_cycle = 0xFFFF
         RPWM4.duty_cycle = 0
-    elif cmds == "Nghienphai_Down":
+    #elif cmds == "Nghienphai_Down":
+    if "Nghienphai_Down" in cmds_list:
         GPIO.output(6, GPIO.LOW)
         GPIO.output(12, GPIO.LOW)
         GPIO.output(13, GPIO.HIGH)
@@ -360,7 +381,8 @@ def control():
         RPWM3.duty_cycle = 0xFFFF 
         LPWM4.duty_cycle = 0xFFFF
         RPWM4.duty_cycle = 0  
-    elif cmds == "Nghienphai_Up":
+    #elif cmds == "Nghienphai_Up":
+    if "Nghienphai_Up" in cmds_list:
         GPIO.output(6, GPIO.LOW)
         GPIO.output(12, GPIO.LOW)
         GPIO.output(13, GPIO.LOW)
@@ -374,7 +396,8 @@ def control():
         RPWM3.duty_cycle = 0xFFFF 
         LPWM4.duty_cycle = 0xFFFF
         RPWM4.duty_cycle = 0       
-    elif cmds == "Nghiensau_Down":
+    #elif cmds == "Nghiensau_Down":
+    if "Nghiensau_Down" in cmds_list:
         GPIO.output(6, GPIO.LOW)
         GPIO.output(12, GPIO.LOW)
         GPIO.output(13, GPIO.LOW)
@@ -388,7 +411,8 @@ def control():
         RPWM3.duty_cycle = 0
         LPWM4.duty_cycle = 0xFFFF
         RPWM4.duty_cycle = 0xFFFF
-    elif cmds == "Nghiensau_Up":
+    #elif cmds == "Nghiensau_Up":
+    if "Nghiensau_Up" in cmds_list:
         GPIO.output(6, GPIO.LOW)
         GPIO.output(12, GPIO.LOW)
         GPIO.output(13, GPIO.LOW)
@@ -402,26 +426,32 @@ def control():
         RPWM3.duty_cycle = 0
         LPWM4.duty_cycle = 0xFFFF
         RPWM4.duty_cycle = 0xFFFF 
-    elif cmds == "Batden":
+    #elif cmds == "Batden":
+    if "Batden" in cmds_list:
         GPIO.output(17, GPIO.HIGH) 
-    elif cmds == "Tatden":
+    #elif cmds == "Tatden":
+    if "Tatden" in cmds_list:
         GPIO.output(17, GPIO.LOW)
-    elif cmds == "Laynuoc":
+    #elif cmds == "Laynuoc":
+    if "Laynuoc" in cmds_list:
         in1.duty_cycle = 0xFFFF 
         in2.duty_cycle = 0
         in3.duty_cycle = 0
         in4.duty_cycle = 0
-    elif cmds == "Daynuoc":
+    #elif cmds == "Daynuoc":
+    if "Daynuoc" in cmds_list:
         in1.duty_cycle = 0
         in2.duty_cycle = 0
         in3.duty_cycle = 0xFFFF 
         in4.duty_cycle = 0  
-    elif cmds == "Dunglaynuoc":
+    #elif cmds == "Dunglaynuoc":
+    if "Dunglaynuoc" in cmds_list:
         in1.duty_cycle = 0
         in2.duty_cycle = 0
         in3.duty_cycle = 0
         in4.duty_cycle = 0     
-    if cmds == "TienPS2":
+    #if cmds == "TienPS2":
+    if "TienPS2" in cmds_list:
         GPIO.output(4, GPIO.LOW)
         GPIO.output(18, GPIO.LOW)
         GPIO.output(27, GPIO.LOW)
@@ -435,7 +465,8 @@ def control():
         RPWM1.duty_cycle = 0
         LPWM2.duty_cycle = int(pwmLeftPS2 * 65535 / 255)
         RPWM2.duty_cycle = int(pwmLeftPS2 * 65535 / 255)
-    elif cmds == "TientraiPS2":
+    #elif cmds == "TientraiPS2":
+    if "TientraiPS2" in cmds_list:
         GPIO.output(4, GPIO.LOW)
         GPIO.output(18, GPIO.LOW)
         GPIO.output(27, GPIO.LOW)
@@ -449,7 +480,8 @@ def control():
         RPWM1.duty_cycle = int(pwmLeftPS2 * 65535 / 255)
         LPWM2.duty_cycle = int(pwmLeftPS2 * 65535 / 255)
         RPWM2.duty_cycle = int(pwmLeftPS2 * 65535 / 255)
-    elif cmds == "TienphaiPS2":
+    #elif cmds == "TienphaiPS2":
+    if "TienphaiPS2" in cmds_list:
         GPIO.output(4, GPIO.LOW)
         GPIO.output(18, GPIO.HIGH)
         GPIO.output(27, GPIO.LOW)
@@ -463,7 +495,8 @@ def control():
         RPWM1.duty_cycle = 0 
         LPWM2.duty_cycle = int(pwmLeftPS2 * 65535 / 255)
         RPWM2.duty_cycle = int(pwmLeftPS2 * 65535 / 255)
-    elif cmds == "LuiPS2":
+    #elif cmds == "LuiPS2":
+    if "LuiPS2" in cmds_list:
         GPIO.output(4, GPIO.HIGH)
         GPIO.output(18, GPIO.LOW)
         GPIO.output(27, GPIO.HIGH)
@@ -477,7 +510,8 @@ def control():
         RPWM1.duty_cycle = int(pwmLeftPS2 * 65535 / 255)
         LPWM2.duty_cycle = 0
         RPWM2.duty_cycle = 0
-    elif cmds == "LuitraiPS2":
+    #elif cmds == "LuitraiPS2":
+    if "LuitraiPS2" in cmds_list:
         GPIO.output(4, GPIO.HIGH)
         GPIO.output(18, GPIO.LOW)
         GPIO.output(27, GPIO.HIGH)
@@ -491,7 +525,8 @@ def control():
         RPWM1.duty_cycle = int(pwmLeftPS2 * 65535 / 255) 
         LPWM2.duty_cycle = 0
         RPWM2.duty_cycle = int(pwmLeftPS2 * 65535 / 255)
-    elif cmds == "LuiphaiPS2":
+    #elif cmds == "LuiphaiPS2":
+    if "LuiphaiPS2" in cmds_list:
         GPIO.output(4, GPIO.HIGH)
         GPIO.output(18, GPIO.LOW)
         GPIO.output(27, GPIO.HIGH)
@@ -505,7 +540,8 @@ def control():
         RPWM1.duty_cycle = int(pwmLeftPS2 * 65535 / 255)
         LPWM2.duty_cycle = int(pwmLeftPS2 * 65535 / 255)
         RPWM2.duty_cycle = 0
-    elif cmds == "TraiPS2":
+    #elif cmds == "TraiPS2":
+    if "TraiPS2" in cmds_list:
         GPIO.output(4, GPIO.HIGH)
         GPIO.output(18, GPIO.LOW)
         GPIO.output(27, GPIO.LOW)
@@ -519,7 +555,8 @@ def control():
         RPWM1.duty_cycle = 0
         LPWM2.duty_cycle = int(pwmLeftPS2 * 65535 / 255)
         RPWM2.duty_cycle = 0
-    elif cmds == "PhaiPS2":
+    #elif cmds == "PhaiPS2":
+    if "PhaiPS2" in cmds_list:
         GPIO.output(4, GPIO.LOW)
         GPIO.output(18, GPIO.LOW)
         GPIO.output(27, GPIO.HIGH)
@@ -533,7 +570,8 @@ def control():
         RPWM1.duty_cycle = int(pwmLeftPS2 * 65535 / 255)
         LPWM2.duty_cycle = 0
         RPWM2.duty_cycle = int(pwmLeftPS2 * 65535 / 255)
-    elif cmds == "QuaytraiPS2":
+    #elif cmds == "QuaytraiPS2":
+    if "QuaytraiPS2" in cmds_list:
         GPIO.output(4, GPIO.HIGH)
         GPIO.output(18, GPIO.LOW)
         GPIO.output(27, GPIO.LOW)
@@ -547,7 +585,8 @@ def control():
         RPWM1.duty_cycle = 0
         LPWM2.duty_cycle = 0
         RPWM2.duty_cycle = 0xFFFF
-    elif cmds == "QuayphaiPS2":
+    #elif cmds == "QuayphaiPS2":
+    if "QuayphaiPS2" in cmds_list:
         GPIO.output(4, GPIO.LOW)
         GPIO.output(18, GPIO.LOW)
         GPIO.output(27, GPIO.HIGH)
@@ -561,7 +600,8 @@ def control():
         RPWM1.duty_cycle = 0xFFFF 
         LPWM2.duty_cycle = 0xFFFF 
         RPWM2.duty_cycle = 0 
-    elif cmds == "LanPS2":
+    #elif cmds == "LanPS2":
+    if "LanPS2" in cmds_list:
         GPIO.output(6, GPIO.HIGH)
         GPIO.output(12, GPIO.LOW)
         GPIO.output(13, GPIO.HIGH)
@@ -575,7 +615,8 @@ def control():
         RPWM3.duty_cycle = int(pwmRightPS2 * 65535 / 255) 
         LPWM4.duty_cycle = int(pwmRightPS2 * 65535 / 255) 
         RPWM4.duty_cycle = int(pwmRightPS2 * 65535 / 255) 
-    elif cmds == "NoiPS2":
+    #elif cmds == "NoiPS2":
+    if "NoiPS2" in cmds_list:
         GPIO.output(6, GPIO.LOW)
         GPIO.output(12, GPIO.HIGH)
         GPIO.output(13, GPIO.LOW)
@@ -589,26 +630,32 @@ def control():
         RPWM3.duty_cycle = int(pwmRightPS2 * 65535 / 255) 
         LPWM4.duty_cycle = int(pwmRightPS2 * 65535 / 255) 
         RPWM4.duty_cycle = int(pwmRightPS2 * 65535 / 255)     
-    elif cmds == "BatdenPS2":
+    #elif cmds == "BatdenPS2":
+    if "BatdenPS2" in cmds_list:
         GPIO.output(17, GPIO.HIGH) 
-    elif cmds == "TatdenPS2":
+    #elif cmds == "TatdenPS2":
+    if "TatdenPS2" in cmds_list:
         GPIO.output(17, GPIO.LOW)
-    elif cmds == "LaynuocPS2":
+    #elif cmds == "LaynuocPS2":
+    if "LaynuocPS2" in cmds_list:
         in1.duty_cycle = 0xFFFF 
         in2.duty_cycle = 0
         in3.duty_cycle = 0
         in4.duty_cycle = 0
-    elif cmds == "DaynuocPS2":
+    #elif cmds == "DaynuocPS2":
+    if "DaynuocPS2" in cmds_list:
         in1.duty_cycle = 0
         in2.duty_cycle = 0
         in3.duty_cycle = 0xFFFF 
         in4.duty_cycle = 0  
-    elif cmds == "DunglaynuocPS2":
+    #elif cmds == "DunglaynuocPS2":
+    if "DunglaynuocPS2" in cmds_list:
         in1.duty_cycle = 0
         in2.duty_cycle = 0
         in3.duty_cycle = 0
         in4.duty_cycle = 0          
-    elif cmds in ["Dung", "DungPS2"]:
+    #elif cmds in ["Dung", "DungPS2"]:
+    if ["Dung", "DungPS2"] in cmds_list:
         GPIO.output(4, GPIO.LOW)
         GPIO.output(18, GPIO.LOW)
         GPIO.output(27, GPIO.LOW)
